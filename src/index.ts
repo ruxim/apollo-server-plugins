@@ -1,7 +1,7 @@
 export const CookiePlugin = {
 	requestDidStart() {
 		return {
-			willSendResponse(requestContext) {
+			willSendResponse(requestContext: any) {
 				const {cookies = [], res} = requestContext.context;
 
 				if (!Array.isArray(cookies)) {
