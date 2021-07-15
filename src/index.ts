@@ -1,20 +1,26 @@
+import {CookieOptions} from 'express';
+
+export interface Cookie {
+	name: string;
+	value: string;
+	options: CookieOptions;
+}
+
+export interface CustomRequestContext {
+	context: {
+		cookies: Cookie[];
+		res: any;
+	};
+}
+
 export const CookiePlugin = {
 	requestDidStart() {
 		return {
-			willSendResponse(requestContext: any) {
+			willSendResponse(requestContext: CustomRequestContext) {
 				const {cookies = [], res} = requestContext.context;
-
-				if (!Array.isArray(cookies)) {
-					throw new Error('cookies array is required in context object');
-				}
-
-				cookies.forEach(({key, value}) => {
-					res.cookie(key, value, {
-						maxAge: 1440 * 60000 * 30,
-						httpOnly: true
-					});
+				cookies.forEach((cookie) => {
+					res.cookie(cookie.name, cookie.value, cookie.options);
 				});
-
 				return requestContext;
 			}
 		};
